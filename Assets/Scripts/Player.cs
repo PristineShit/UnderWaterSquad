@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     KeyCode Left = KeyCode.A;
 
     Rigidbody m_rigidbody;
+
+    public Transform cam;
 	// Use this for initialization
 	void Start ()
     {
@@ -22,7 +24,8 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        Movement();
+        JoystickMovement();
+        KeyMovement();
 	}
 
     public void SetForwardVel(Vector3 _forward)
@@ -30,23 +33,53 @@ public class Player : MonoBehaviour
         forward = _forward;
     }
 
-    void Movement()
+    void JoystickMovement()
+    {
+        if(Input.GetButtonDown("A_1"))
+        {
+            m_rigidbody.AddForce(CalcForwardVector() * acceleration);
+        }
+        if (Input.GetAxis("L_YAxis_1") < 0)
+        {
+            m_rigidbody.AddForce(CalcForwardVector() * -acceleration);
+        }
+    }
+
+    void KeyMovement()
     {
         if (Input.GetKeyDown(Foward))
         { 
-            m_rigidbody.AddForce(new Vector3(1, 0, 0) * acceleration);
+            m_rigidbody.AddForce(CalcForwardVector() * acceleration);
         }
         if (Input.GetKeyDown(Backward))
         {
-            m_rigidbody.AddForce(new Vector3(-1, 0, 0) * acceleration);
+            m_rigidbody.AddForce(CalcForwardVector() * -acceleration);
         }
         if (Input.GetKeyDown(Right))
         {
-            m_rigidbody.AddForce(new Vector3(0, 0, 1) * acceleration);
+            m_rigidbody.AddForce(CalcLeftVector() * -acceleration);
         }
         if (Input.GetKeyDown(Left))
         {
-            m_rigidbody.AddForce(new Vector3(0, 0, -1) * acceleration);
+            m_rigidbody.AddForce(CalcLeftVector() * acceleration);
         }
+    }
+
+    Vector3 CalcForwardVector()
+    {
+        Vector3 _vector = (this.transform.position - cam.position);
+        _vector.y = 0;
+        return _vector.normalized;
+    }
+
+    Vector3 CalcLeftVector()
+    {
+
+        Vector3 a = Vector3.up;
+               
+        Vector3 b = (cam.position - this.transform.position).normalized;
+        b.y = 0;
+               
+        return Vector3.Cross(a,b);
     }
 }
