@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     float maxSpeed = 20f;
     float acceleration = 100f;
 
+    float maxVelocity = 15f;
+
     KeyCode Foward = KeyCode.W;
     KeyCode Backward = KeyCode.S;
     KeyCode Right = KeyCode.D;
@@ -24,8 +26,9 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        JoystickMovement();
         KeyMovement();
+
+        VecCheck();
 	}
 
     public void SetForwardVel(Vector3 _forward)
@@ -45,24 +48,32 @@ public class Player : MonoBehaviour
         }
     }
 
+    void JumpMovement()
+    {
+
+
+    }
+
     void KeyMovement()
     {
-        if (Input.GetKeyDown(Foward))
+        if (Input.GetKey(Foward))
         { 
             m_rigidbody.AddForce(CalcForwardVector() * acceleration);
         }
-        if (Input.GetKeyDown(Backward))
+        if (Input.GetKey(Backward))
         {
             m_rigidbody.AddForce(CalcForwardVector() * -acceleration);
         }
-        if (Input.GetKeyDown(Right))
+        if (Input.GetKey(Right))
         {
             m_rigidbody.AddForce(CalcLeftVector() * -acceleration);
         }
-        if (Input.GetKeyDown(Left))
+        if (Input.GetKey(Left))
         {
             m_rigidbody.AddForce(CalcLeftVector() * acceleration);
         }
+
+                
     }
 
     Vector3 CalcForwardVector()
@@ -81,5 +92,27 @@ public class Player : MonoBehaviour
         b.y = 0;
                
         return Vector3.Cross(a,b);
+    }
+
+    void VecCheck()
+    {
+        Vector3 vel = m_rigidbody.velocity;
+        if (vel.x > maxVelocity)
+        {
+            vel.x = maxVelocity;
+        }
+        if (vel.y > maxVelocity)
+        {
+            vel.y = maxVelocity;
+        }
+        if (vel.x < -maxVelocity)
+        {
+            vel.x = -maxVelocity;
+        }
+        if (vel.y < -maxVelocity)
+        {
+            vel.y = -maxVelocity;
+        }
+        m_rigidbody.velocity = vel;
     }
 }
