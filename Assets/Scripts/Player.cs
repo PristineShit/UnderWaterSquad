@@ -4,10 +4,10 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
     Vector3 forward;
-    float maxSpeed = 20f;
-    float acceleration = 100f;
+    //public float maxSpeed = 20f;
+    public float acceleration = 100f;
 
-    float maxVelocity = 15f;
+    public float maxVelocity = 15f;
 
     KeyCode Foward = KeyCode.W;
     KeyCode Backward = KeyCode.S;
@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
 
     Rigidbody m_rigidbody;
 
-    public Transform cam;
+    public Transform forwardTarget;
 	// Use this for initialization
 	void Start ()
     {
@@ -78,7 +78,7 @@ public class Player : MonoBehaviour
 
     Vector3 CalcForwardVector()
     {
-        Vector3 _vector = (this.transform.position - cam.position);
+        Vector3 _vector = (forwardTarget.position - this.transform.position);
         _vector.y = 0;
         return _vector.normalized;
     }
@@ -88,10 +88,10 @@ public class Player : MonoBehaviour
 
         Vector3 a = Vector3.up;
                
-        Vector3 b = (cam.position - this.transform.position).normalized;
+        Vector3 b = (this.transform.position - forwardTarget.position).normalized;
         b.y = 0;
                
-        return Vector3.Cross(a,b);
+        return Vector3.Cross(a,b).normalized;
     }
 
     void VecCheck()
@@ -101,18 +101,19 @@ public class Player : MonoBehaviour
         {
             vel.x = maxVelocity;
         }
-        if (vel.y > maxVelocity)
+        if (vel.z > maxVelocity)
         {
-            vel.y = maxVelocity;
+            vel.z = maxVelocity;
         }
         if (vel.x < -maxVelocity)
         {
             vel.x = -maxVelocity;
         }
-        if (vel.y < -maxVelocity)
+        if (vel.z < -maxVelocity)
         {
-            vel.y = -maxVelocity;
+            vel.z = -maxVelocity;
         }
         m_rigidbody.velocity = vel;
+        Debug.Log(m_rigidbody.velocity);
     }
 }
